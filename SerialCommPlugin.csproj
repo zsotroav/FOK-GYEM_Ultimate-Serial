@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>SerialCommPlugin</RootNamespace>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+  <PropertyGroup>
+	  <TargetFramework>net5.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PluginBase\PluginBase.csproj">
+        <Private>false</Private>
+        <ExcludeAssets>runtime</ExcludeAssets>
+	    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call PostBuild.bat" />
+  </Target>
+  
+</Project>
