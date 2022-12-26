@@ -6,7 +6,7 @@ using Action = PluginBase.Action;
 
 namespace SerialCommPlugin
 {
-    public class Test : IPlugin
+    public class SerialComm : IPlugin
     {
         public string Name => "Serial Communications";
         public string Description => "A plugin to enable serial communication with the Arduino controller (built-in)";
@@ -22,16 +22,16 @@ namespace SerialCommPlugin
                 ActionID = 0,
                 SubActions = new List<SubAction>()
                 {
-                    new SubAction() {ActionID = 10, ActionName = "Connect"},
-                    new SubAction() {ActionID = 11, ActionName = "Disconnect"}
+                    new SubAction() {ActionID = 0, ActionName = "Connect"},
+                    new SubAction() {ActionID = 1, ActionName = "Disconnect"}
                 }
             }
         };
 
         public int Init(IContext context)
         {
-            AllocConsole();
-            Console.OpenStandardOutput();
+            // AllocConsole();
+            // Console.OpenStandardOutput();
 
             SDK.PixelUpdatedEvent += ActionPD;
             SDK.ScreenUpdatedFull += ActionBA;
@@ -42,19 +42,21 @@ namespace SerialCommPlugin
         {
             switch (runID)
             {
-                case 10:
-                    Connect();
+                case 0:
+                    Start();
                     break;
-                case 11:
+                case 1:
                     Disconnect();
                     break;
             }
             return 0;
         }
 
-        public void Connect()
+        public Connection connection;
+
+        public void Start()
         {
-            Console.WriteLine("AS");
+            connection = new Connection();
         }
 
         public void Disconnect()
@@ -64,9 +66,12 @@ namespace SerialCommPlugin
 
         public void ActionPD(pixelData data)
         {
+
         }
 
-        public void ActionBA(System.Collections.BitArray i){
+        public void ActionBA(System.Collections.BitArray i)
+        {
+
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]

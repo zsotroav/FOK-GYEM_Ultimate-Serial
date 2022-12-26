@@ -2,9 +2,11 @@
 
 Connection between the Controller and the Screen is a non-encrypted mutual agreement protocol.
 
-PROTOCOL VERSION: 00
+**PROTOCOL VERSION: 00**
 
-LAST UPDATED: 2022/12/15
+**LAST UPDATED: 2022/12/15**
+
+----
 
 ## Initializing a connection
 ### Controller begin message
@@ -72,3 +74,15 @@ The list of commands is not definitive, newer versions of the protocol may add n
 | 12 | Pixel Write               | Location (2 bytes) state (AA on/55 off) |
 +----+---------------------------+-----------------------------------------+
 ```
+
+## Data structure
+```
++---------+---------+----------
+| CONTROL | LENDATA | DATA
++----+----+----+----+----------
+| AF | 00 | 00 | 00 | null
++----+----+----+----+----------
+| AF | 12 | 00 | 03 | 03 02 AA
++----+----+----+----+----------
+```
+The DATA field's length is defined by the two LENDATA bytes. Due to LENDATA being limited to two bytes, only data of upto 65535 bytes (~64 KB) is possible, but that should be enough for almost all use cases and at that point, the transfer speed of the serial connection would be limiting factor.
