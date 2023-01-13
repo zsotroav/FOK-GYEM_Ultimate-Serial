@@ -6,12 +6,8 @@
 	</PropertyGroup>
 
   <PropertyGroup>
-	  <TargetFramework>net7.0</TargetFramework>
+	  <TargetFramework>net7.0-windows</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.IO.Ports" Version="7.0.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PluginBase\PluginBase.csproj">
@@ -20,6 +16,12 @@
 	    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Ports">
+      <HintPath>System.IO.Ports.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -1,1 +1,1 @@
-copy .\bin\debug\net5.0-windows\*.dll ..\FOK-GYEM_Ultimate\resources\Plugins
+copy .\bin\debug\net7.0-windows\*.dll ..\FOK-GYEM_Ultimate\resources\Plugins

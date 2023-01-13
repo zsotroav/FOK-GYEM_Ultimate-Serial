@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Runtime.InteropServices;
 using PluginBase;
 using Action = PluginBase.Action;
@@ -22,8 +24,8 @@ namespace SerialCommPlugin
                 ActionID = 0,
                 SubActions = new List<SubAction>()
                 {
-                    new SubAction() {ActionID = 0, ActionName = "Connect"},
-                    new SubAction() {ActionID = 1, ActionName = "Disconnect"}
+                    new() {ActionID = 1, ActionName = "Connect"},
+                    new() {ActionID = 2, ActionName = "Disconnect"}
                 }
             }
         };
@@ -42,10 +44,10 @@ namespace SerialCommPlugin
         {
             switch (runID)
             {
-                case 0:
+                case 1:
                     Start();
                     break;
-                case 1:
+                case 2:
                     Disconnect();
                     break;
             }
@@ -53,15 +55,20 @@ namespace SerialCommPlugin
         }
 
         public Connection connection;
+        public bool active;
 
         public void Start()
         {
-            connection = new Connection();
+            connection = new Connection("COM3", 9600, Parity.None, 0, StopBits.None);
+            //active = connection.Init();
+            if (active) SDK.Communicate("Serial Connection", "Connection established");
+            else SDK.Communicate("Serial Connection",  "Connection failed", "error");
         }
 
         public void Disconnect()
         {
-
+            if (active) connection.Destroy();
+            active = false;
         }
 
         public void ActionPD(pixelData data)
@@ -69,9 +76,9 @@ namespace SerialCommPlugin
 
         }
 
-        public void ActionBA(System.Collections.BitArray i)
+        public void ActionBA(BitArray data)
         {
-
+          /*if (active)*/ connection.FullScreenWrite(Utils.ToByteArray(data));
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
