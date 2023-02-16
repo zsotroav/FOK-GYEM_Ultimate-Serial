@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using PluginBase;
 using Action = PluginBase.Action;
 
@@ -14,6 +14,8 @@ namespace SerialCommPlugin
         public string Description => "A plugin to enable serial communication with the Arduino controller (built-in)";
         public string Author => "zsotroav";
         public string Link => "https://github.com/zsotroav/FOK-GYEM_Ultimate";
+
+        public bool IsConnected = false;
 
         public List<Action> Actions => new()
         {
@@ -54,31 +56,44 @@ namespace SerialCommPlugin
             return 0;
         }
 
-        public Connection connection;
-        public bool active;
+        public Connection Connection;
 
         public void Start()
         {
-            connection = new Connection("COM3", 9600, Parity.None, 0, StopBits.None);
-            //active = connection.Init();
-            if (active) SDK.Communicate("Serial Connection", "Connection established");
-            else SDK.Communicate("Serial Connection",  "Connection failed", "error");
+            var form = new FormConfig();
+            var result = form.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                Connection = form.Connection;
+                IsConnected = true;
+            }
+
+            if (IsConnected) SDK.Communicate("Serial Connection", "Connection established");
+            else SDK.Communicate("Serial Connection", "Connection failed", "error");
         }
 
         public void Disconnect()
         {
-            if (active) connection.Destroy();
-            active = false;
+            if (IsConnected)
+            {
+                Connection.Destroy();
+                IsConnected = false;
+                SDK.Communicate("Serial COM disconnect", "Disconnected serial screen.");
+                return;
+            }
+            SDK.Communicate("Serial COM disconnect", "Not connected, no connection to destroy!", "warning");
         }
 
         public void ActionPD(pixelData data)
         {
-
+            if (!IsConnected) return;
         }
 
         public void ActionBA(BitArray data)
         {
-          /*if (active)*/ connection.FullScreenWrite(Utils.ToByteArray(data));
+            if (!IsConnected) return;
+            Connection.FullScreenWrite(Utils.ToByteArray(data));
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]

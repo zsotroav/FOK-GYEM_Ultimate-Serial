@@ -14,14 +14,14 @@ namespace SerialCommPlugin
         ///<summary>Connection reference number</summary>
         public Byte CD;
 
-        public SerialPort Port;
+        public SerialPort Port; 
 
         public Connection(string portName, 
             int baudRate,
-            Parity parity,
-            int dataBits,
-            StopBits stopBits,
             int timeout = 500,
+            Parity parity = Parity.None, 
+            StopBits stopBits = StopBits.None,
+            int dataBits = 8,
             Handshake handshake = Handshake.None)
         {
             Port = new SerialPort
@@ -56,7 +56,7 @@ namespace SerialCommPlugin
             Port.Write(initMessage,0,8);
 
             var buff = new byte[8];
-            Port.Read(buff, 0, 8);
+            Port.Read(buff, 0, 10);
 
             // +----+----+----+----+----+----+---------+
             // | VE | CN | Wd | He | AC | CD | CONTROL |
@@ -64,7 +64,7 @@ namespace SerialCommPlugin
             // | 00 | 07 | 18 | 07 | FF | AF | AF | 00 |  - Accepted connection
             // +----+----+----+----+----+----+----+----+
             //
-            // We ignore the last 2 data bytes 
+            // We ignore the last 2 data bytes (LENDATA)
 
             VEDisplay = buff[0];
 
