@@ -9,11 +9,13 @@ namespace SerialCommPlugin
     public partial class FormConfig : Form
     {
         public Connection Connection;
-        public bool Success = true;
+        public bool Success;
         
         public FormConfig()
         {
             InitializeComponent();
+
+            COMCombo.Items.AddRange(SerialPort.GetPortNames());
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -28,10 +30,9 @@ namespace SerialCommPlugin
             };
             var stop = stopCombo.Text switch
             {
-                "One" => StopBits.One,
                 "OnePointFive" => StopBits.OnePointFive,
                 "Two" => StopBits.Two,
-                _ => StopBits.None
+                _ => StopBits.One
             };
 
             try
@@ -44,14 +45,14 @@ namespace SerialCommPlugin
                     stop);
                 if (!Connection.Init((int)modNumeric.Value, (int)widthNumeric.Value, (int)heightNumeric.Value))
                     throw new ExternalException("Initializing connection failed");
+
+                Success = true;
             }
             catch (Exception ex)
             {
-                Success = false;
                 SDK.Communicate("Serial COM Exception", ex.Message, "error");
-                Close();
             }
-            
+
             Close();
         }
     }

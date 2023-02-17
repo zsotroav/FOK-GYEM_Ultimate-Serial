@@ -111,6 +111,7 @@ namespace SerialCommPlugin
             this.COMCombo.Name = "COMCombo";
             this.COMCombo.Size = new System.Drawing.Size(130, 23);
             this.COMCombo.TabIndex = 8;
+            this.COMCombo.Text = "COM1";
             // 
             // button1
             // 
@@ -170,7 +171,6 @@ namespace SerialCommPlugin
             // 
             this.stopCombo.FormattingEnabled = true;
             this.stopCombo.Items.AddRange(new object[] {
-            "None",
             "One",
             "OnePointFive",
             "Two"});
@@ -178,11 +178,11 @@ namespace SerialCommPlugin
             this.stopCombo.Name = "stopCombo";
             this.stopCombo.Size = new System.Drawing.Size(130, 23);
             this.stopCombo.TabIndex = 16;
-            this.stopCombo.Text = "None";
+            this.stopCombo.Text = "One";
             // 
             // modNumeric
             // 
-            this.modNumeric.Location = new System.Drawing.Point(12, 169);
+            this.modNumeric.Location = new System.Drawing.Point(13, 169);
             this.modNumeric.Maximum = new decimal(new int[] {
             10,
             0,
@@ -202,13 +202,13 @@ namespace SerialCommPlugin
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(58, 171);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 15);
+            this.label5.Size = new System.Drawing.Size(84, 15);
             this.label5.TabIndex = 18;
-            this.label5.Text = "modules,";
+            this.label5.Text = "modules, each";
             // 
             // widthNumeric
             // 
-            this.widthNumeric.Location = new System.Drawing.Point(120, 169);
+            this.widthNumeric.Location = new System.Drawing.Point(148, 169);
             this.widthNumeric.Name = "widthNumeric";
             this.widthNumeric.Size = new System.Drawing.Size(40, 23);
             this.widthNumeric.TabIndex = 19;
@@ -221,7 +221,7 @@ namespace SerialCommPlugin
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(166, 171);
+            this.label7.Location = new System.Drawing.Point(190, 171);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(13, 15);
             this.label7.TabIndex = 20;
@@ -229,7 +229,7 @@ namespace SerialCommPlugin
             // 
             // heightNumeric
             // 
-            this.heightNumeric.Location = new System.Drawing.Point(185, 169);
+            this.heightNumeric.Location = new System.Drawing.Point(202, 169);
             this.heightNumeric.Name = "heightNumeric";
             this.heightNumeric.Size = new System.Drawing.Size(40, 23);
             this.heightNumeric.TabIndex = 21;

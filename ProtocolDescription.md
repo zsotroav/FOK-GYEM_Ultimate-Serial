@@ -2,9 +2,9 @@
 
 Connection between the Controller and the Screen is a non-encrypted mutual agreement protocol.
 
-**PROTOCOL VERSION: 00**
+**PROTOCOL VERSION: 01**
 
-**LAST UPDATED: 2022/12/15**
+**LAST UPDATED: 2023/02/17**
 
 ----
 
@@ -21,7 +21,7 @@ Connection between the Controller and the Screen is a non-encrypted mutual agree
 Where:
 - Magic header is the header of `AA 55 AA 55` to signal the beginning of the connection message (easily notice in potential noise)
 - VE is Protocol version
-- - Backwards compatibility from the controller is expected, but if the connected display has a newer version, connection should be refused
+- - Backwards compatibility from the controller is generally expected, but if the connected display has a newer version, connection should be refused.
 - CN is the Count of modules expected
 - Wd and He is the Width and Height of the expected modules
 
@@ -48,17 +48,18 @@ Unlike the main controller, the display only ever responds with exactly two byte
 +----+----+
 | AF | 00 |    - Accept
 +----+----+
-| AF | FF |    - Deny (or close)    
+| AF | FF |    - Deny (or close)
 +----+----+
 etc...
 ```
 - `00` is the connection accepted and initialized command
-- `0F` is the connection denied and initialized command
+- `0F` is the connection denied command
 - `01` is the success control response
 Faliure responses:
 - `02` Internal exception
 - `03` Problem with the screen
 - `04` Unknown command
+- `05` Bad data
 - LENDATA is the length of additional data (in bytes)
 
 ## Sustaining a connection
@@ -67,7 +68,7 @@ There are no keep alive packages, the Controller and Screen rely on the referenc
 
 The Screen must ignore any messages sent not begining with the configured reference number.
 
-The controller responds
+The controller responds to every command with two bytes.
 
 ## Controller commands
 
@@ -78,7 +79,7 @@ The list of commands is not definitive, newer versions of the protocol may add n
 +----+-----------------------+-----------------------------------------+
 | 11 | Full screen write     | Serial Data of new screen state         |
 +----+-----------------------+-----------------------------------------+
-| 12 | Pixel Write           | Location (2 bytes) state (AA on/55 off) |
+| 12 | Pixel Write           | Location (2 bytes) state (01 on/00 off) |
 +----+-----------------------+-----------------------------------------+
 ```
 
@@ -89,7 +90,7 @@ The list of commands is not definitive, newer versions of the protocol may add n
 +----+----+----+----+----------
 | AF | 00 | 00 | 00 | null
 +----+----+----+----+----------
-| AF | 12 | 00 | 03 | 03 02 AA 
+| AF | 12 | 00 | 03 | 03 02 01 
 +----+----+----+----+----------
 ```
 The DATA field's length is defined by the two LENDATA bytes. Due to LENDATA being limited to two bytes, only data of upto 65535 bytes (~64 KB) is possible, but that should be enough for almost all use cases and at that point, the transfer speed of the serial connection would be limiting factor.

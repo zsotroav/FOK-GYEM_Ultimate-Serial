@@ -60,10 +60,15 @@ namespace SerialCommPlugin
 
         public void Start()
         {
+            if (IsConnected)
+            {
+                SDK.Communicate("Serial Connection", "Connection already established!\nOnly one serial controller is supported at once.", "warning");
+                return;
+            }
             var form = new FormConfig();
-            var result = form.ShowDialog();
+            form.ShowDialog();
 
-            if (result == DialogResult.OK)
+            if (form.Success)
             {
                 Connection = form.Connection;
                 IsConnected = true;
@@ -88,6 +93,7 @@ namespace SerialCommPlugin
         public void ActionPD(pixelData data)
         {
             if (!IsConnected) return;
+            Connection.PixelWrite(data);
         }
 
         public void ActionBA(BitArray data)
