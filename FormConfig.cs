@@ -52,6 +52,7 @@ namespace SerialCommPlugin
                 {
                     Success = false;
                     Close();
+                    return;
                 }
 
                 Success = true;

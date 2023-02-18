@@ -4,7 +4,7 @@ Connection between the Controller and the Screen is a non-encrypted mutual agree
 
 **PROTOCOL VERSION: 01**
 
-**LAST UPDATED: 2023/02/17**
+**LAST UPDATED: 2023/02/18**
 
 ----
 
@@ -14,7 +14,7 @@ Connection between the Controller and the Screen is a non-encrypted mutual agree
 +-------------------+----+----+----+----+
 |    MAGIC HEADER   | VE | CN | Wd | He |
 +----+----+----+----+----+----+----+----+
-| AA | 55 | AA | 55 | 00 | 07 | 18 | 07 |
+| AA | 55 | AA | 55 | 01 | 07 | 18 | 07 |
 +----+----+----+----+----+----+----+----+
 ```
 
@@ -30,7 +30,7 @@ Where:
 +----+----+----+----+----+----+
 | VE | CN | Wd | He | AC | CD |
 +----+----+----+----+----+----+
-| 00 | 07 | 18 | 07 | FF | AF |
+| 01 | 07 | 18 | 07 | FF | AF |
 +----+----+----+----+----+----+
 ```
 - AC is the accept flag: 
@@ -80,6 +80,8 @@ The list of commands is not definitive, newer versions of the protocol may add n
 | 11 | Full screen write     | Serial Data of new screen state         |
 +----+-----------------------+-----------------------------------------+
 | 12 | Pixel Write           | Location (2 bytes) state (01 on/00 off) |
++----+-----------------------+-----------------------------------------+
+| 19 | Force screen write    | Serial Data of new screen state         |
 +----+-----------------------+-----------------------------------------+
 ```
 

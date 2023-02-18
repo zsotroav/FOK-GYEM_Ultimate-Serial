@@ -25,6 +25,16 @@ namespace SerialCommPlugin
                     new() {ActionID = 1, ActionName = "Connect"},
                     new() {ActionID = 2, ActionName = "Disconnect"}
                 }
+            },
+            new Action{
+                Menu = Menu.Plugin,
+                ActionName = "Refresh full screen",
+                ActionID = 8
+            },
+            new Action{
+                Menu = Menu.Plugin,
+                ActionName = "Force refresh screen",
+                ActionID = 9
             }
         };
 
@@ -53,6 +63,12 @@ namespace SerialCommPlugin
                     break;
                 case 2:
                     Disconnect();
+                    break;
+                case 8:
+                    ManualWrite(SDK.GetScreenState());
+                    break;
+                case 9:
+                    ManualWrite(SDK.GetScreenState(), true);
                     break;
             }
             return 0;
@@ -101,6 +117,18 @@ namespace SerialCommPlugin
         {
             if (!Connection.IsConnected) return;
             Connection.FullScreenWrite(Utils.ToByteArray(data));
+        }
+
+        public void ManualWrite(BitArray data, bool force = false)
+        {
+            if (!Connection.IsConnected)
+            {
+                SDK.Communicate("Serial COM Disconnected", "Controller not connected!", "warning");
+                return;
+            }
+
+            if (force) Connection.ForceScreenWrite(Utils.ToByteArray(data));
+            else Connection.FullScreenWrite(Utils.ToByteArray(data));
         }
 
         public void ScreenUpdated(int cnt, int _, int w, int h)

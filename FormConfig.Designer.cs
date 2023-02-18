@@ -82,9 +82,19 @@ namespace SerialCommPlugin
             // 
             // timeoutNumeric
             // 
+            this.timeoutNumeric.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.timeoutNumeric.Location = new System.Drawing.Point(112, 70);
             this.timeoutNumeric.Maximum = new decimal(new int[] {
             10000,
+            0,
+            0,
+            0});
+            this.timeoutNumeric.Minimum = new decimal(new int[] {
+            500,
             0,
             0,
             0});
@@ -92,7 +102,7 @@ namespace SerialCommPlugin
             this.timeoutNumeric.Size = new System.Drawing.Size(130, 23);
             this.timeoutNumeric.TabIndex = 6;
             this.timeoutNumeric.Value = new decimal(new int[] {
-            500,
+            1000,
             0,
             0,
             0});

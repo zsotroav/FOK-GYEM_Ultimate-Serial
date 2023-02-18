@@ -7,7 +7,7 @@ namespace SerialCommPlugin
     public class Connection
     {
         ///<summary>Controller protocol version number</summary>
-        public static readonly byte VEController = 0x00;
+        public static readonly byte VEController = 0x01;
         
         ///<summary>Display protocol version number</summary>
         public byte VEDisplay;
@@ -63,7 +63,7 @@ namespace SerialCommPlugin
             // +----+----+----+----+----+----+
             // | VE | CN | Wd | He | AC | CD |
             // +----+----+----+----+----+----+
-            // | 00 | 07 | 18 | 07 | FF | AF |
+            // | 01 | 07 | 18 | 07 | FF | AF |
             // +----+----+----+----+----+----+
 
             VEDisplay = buff[0];
@@ -73,6 +73,7 @@ namespace SerialCommPlugin
             {
                 CD = buff[5];
                 IsConnected = true;
+                FullScreenWrite(Utils.ToByteArray(SDK.GetScreenState()));
                 return true;
             }
 
@@ -89,7 +90,7 @@ namespace SerialCommPlugin
             Port.Close();
         }
 
-        /// <summary>Re-write the whole screen</summary>
+        /// <summary>Re-write the whole screen with the driver's optimizations in place</summary>
         /// <param name="data">Data to write</param>
         public void FullScreenWrite(byte[] data)
         {
@@ -100,6 +101,29 @@ namespace SerialCommPlugin
                 Port.Write(data, 0, data.Length);
                 GetResponse();
             } catch (Exception ex) { HandleException(ex); }
+        }
+
+        /// <summary>
+        /// Re-write the whole screen with driver_forceScreenWrite (SLOW!)
+        /// This bypasses any checks the driver arduino may make to
+        /// save on resources, and as such should only be used when
+        /// regular full screen writing doesn't work as expected.
+        /// </summary>
+        /// <param name="data">Data to write</param>
+        public void ForceScreenWrite(byte[] data)
+        {
+            // Force writing is slow and a timeout error is very likely at usual values.
+            Port.ReadTimeout += 2000;
+            try
+            {
+                byte[] msg = { CD, 0x19, (byte)(data.Length >> 8), (byte)data.Length };
+                Port.Write(msg, 0, 4);
+                Port.Write(data, 0, data.Length);
+                GetResponse();
+            }
+            catch (Exception ex) { HandleException(ex); }
+
+            Port.ReadTimeout -= 2000;
         }
 
         public void PixelWrite(PixelData pixel)
