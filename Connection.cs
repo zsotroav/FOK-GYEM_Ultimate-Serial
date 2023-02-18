@@ -19,8 +19,8 @@ namespace SerialCommPlugin
 
         public bool IsConnected;
 
-        public Connection(string portName, 
-            int baudRate,
+        public Connection(string portName = "COM1", 
+            int baudRate = 9600,
             int timeout = 500,
             Parity parity = Parity.None, 
             StopBits stopBits = StopBits.One,
@@ -37,13 +37,13 @@ namespace SerialCommPlugin
                 StopBits = stopBits,
                 WriteTimeout = timeout
             };
-            Port.Open();
         }
 
         /// <summary>Begin connection</summary>
         /// <returns>Whether or not the controller accepted the connection</returns>
         public bool Init(int count, int width, int height)
         {
+            Port.Open();
             byte[] initMessage = { 0xAA, 0x55, 0xAA, 0x55, VEController, (byte)count, (byte)width, (byte)height};
             Port.Write(initMessage,0,8);
 

@@ -58,7 +58,7 @@ namespace SerialCommPlugin
             return 0;
         }
 
-        public Connection Connection;
+        public Connection Connection = new();
 
         public void Start()
         {
