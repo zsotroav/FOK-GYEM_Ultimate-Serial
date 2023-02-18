@@ -15,7 +15,9 @@ namespace SerialCommPlugin
         ///<summary>Connection reference number</summary>
         public byte CD;
 
-        public SerialPort Port; 
+        public SerialPort Port;
+
+        public bool IsConnected;
 
         public Connection(string portName, 
             int baudRate,
@@ -45,9 +47,19 @@ namespace SerialCommPlugin
             byte[] initMessage = { 0xAA, 0x55, 0xAA, 0x55, VEController, (byte)count, (byte)width, (byte)height};
             Port.Write(initMessage,0,8);
 
-            var buff = new byte[6]; 
-            ReadExactly(buff, Port);
-            
+            var buff = new byte[6];
+            try
+            {
+                ReadExactly(buff, Port);
+            }
+            catch (Exception ex)
+            {
+                SDK.Communicate("Serial COM Exception", ex.Message, "error");
+                Port.Close();
+                IsConnected = false;
+                return false;
+            }
+
             // +----+----+----+----+----+----+
             // | VE | CN | Wd | He | AC | CD |
             // +----+----+----+----+----+----+
@@ -60,9 +72,12 @@ namespace SerialCommPlugin
             if (buff[1] == (byte)count && buff[2] == (byte)width && buff[3] == (byte)height && buff[4] == 0xFF)
             {
                 CD = buff[5];
+                IsConnected = true;
                 return true;
             }
 
+            Port.Close();
+            IsConnected = false;
             return false;
         }
 
@@ -70,6 +85,7 @@ namespace SerialCommPlugin
         public void Destroy()
         {
             Port.Write(new byte[] { CD, 0x0F, 0x00, 0x00 }, 0, 4);
+            IsConnected = false;
             Port.Close();
         }
 
@@ -77,17 +93,24 @@ namespace SerialCommPlugin
         /// <param name="data">Data to write</param>
         public void FullScreenWrite(byte[] data)
         {
-            byte[] msg = { CD, 0x11, (byte)(data.Length>>8), (byte)data.Length};
-            Port.Write(msg,0, 4);
-            Port.Write(data, 0, data.Length);
-            GetResponse();
+            try
+            {
+                byte[] msg = { CD, 0x11, (byte)(data.Length >> 8), (byte)data.Length };
+                Port.Write(msg, 0, 4);
+                Port.Write(data, 0, data.Length);
+                GetResponse();
+            } catch (Exception ex) { HandleException(ex); }
         }
 
         public void PixelWrite(PixelData pixel)
         {
-            byte[] msg = { CD, 0x12, 0x00, 0x03, (byte)pixel.Loc.X, (byte)pixel.Loc.Y, (byte)(pixel.State ? 0x01 : 0x00) };
-            Port.Write(msg, 0, 7);
-            GetResponse();
+            try
+            {
+                byte[] msg =
+                    { CD, 0x12, 0x00, 0x03, (byte)pixel.Loc.X, (byte)pixel.Loc.Y, (byte)(pixel.State ? 0x01 : 0x00) };
+                Port.Write(msg, 0, 7);
+                GetResponse();
+            } catch (Exception ex) { HandleException(ex); }
         }
 
         /// <summary>
@@ -133,6 +156,16 @@ namespace SerialCommPlugin
             SDK.Communicate("Serial Communication error", message, "error");
 
             if (errNumber == 0x04 || errNumber == 0x05) Destroy();
+        }
+
+        public void HandleException(Exception ex)
+        {
+            if (ex is InvalidOperationException)
+            {
+                SDK.Communicate("Serial COM Exception", "The serial connected controller appears to have been disconnected.", "error");
+                IsConnected = false;
+            } else
+                SDK.Communicate("Serial COM Exception", ex.Message, "error");
         }
     }
 }

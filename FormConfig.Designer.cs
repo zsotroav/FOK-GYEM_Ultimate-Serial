@@ -40,15 +40,8 @@ namespace SerialCommPlugin
             this.baudCombo = new System.Windows.Forms.ComboBox();
             this.parityCombo = new System.Windows.Forms.ComboBox();
             this.stopCombo = new System.Windows.Forms.ComboBox();
-            this.modNumeric = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
-            this.widthNumeric = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.heightNumeric = new System.Windows.Forms.NumericUpDown();
+            this.configText = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.widthNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.heightNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -180,75 +173,23 @@ namespace SerialCommPlugin
             this.stopCombo.TabIndex = 16;
             this.stopCombo.Text = "One";
             // 
-            // modNumeric
+            // configText
             // 
-            this.modNumeric.Location = new System.Drawing.Point(13, 169);
-            this.modNumeric.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.modNumeric.Name = "modNumeric";
-            this.modNumeric.Size = new System.Drawing.Size(40, 23);
-            this.modNumeric.TabIndex = 17;
-            this.modNumeric.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(58, 171);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 15);
-            this.label5.TabIndex = 18;
-            this.label5.Text = "modules, each";
-            // 
-            // widthNumeric
-            // 
-            this.widthNumeric.Location = new System.Drawing.Point(148, 169);
-            this.widthNumeric.Name = "widthNumeric";
-            this.widthNumeric.Size = new System.Drawing.Size(40, 23);
-            this.widthNumeric.TabIndex = 19;
-            this.widthNumeric.Value = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(190, 171);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(13, 15);
-            this.label7.TabIndex = 20;
-            this.label7.Text = "x";
-            // 
-            // heightNumeric
-            // 
-            this.heightNumeric.Location = new System.Drawing.Point(202, 169);
-            this.heightNumeric.Name = "heightNumeric";
-            this.heightNumeric.Size = new System.Drawing.Size(40, 23);
-            this.heightNumeric.TabIndex = 21;
-            this.heightNumeric.Value = new decimal(new int[] {
-            7,
-            0,
-            0,
-            0});
+            this.configText.BackColor = System.Drawing.SystemColors.Control;
+            this.configText.Enabled = false;
+            this.configText.Location = new System.Drawing.Point(12, 169);
+            this.configText.Name = "configText";
+            this.configText.Size = new System.Drawing.Size(230, 23);
+            this.configText.TabIndex = 17;
+            this.configText.Text = "config";
+            this.configText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // FormConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(254, 233);
-            this.Controls.Add(this.heightNumeric);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.widthNumeric);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.modNumeric);
+            this.Controls.Add(this.configText);
             this.Controls.Add(this.stopCombo);
             this.Controls.Add(this.parityCombo);
             this.Controls.Add(this.baudCombo);
@@ -267,9 +208,6 @@ namespace SerialCommPlugin
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Serial Communication Config";
             ((System.ComponentModel.ISupportInitialize)(this.timeoutNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.modNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.widthNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.heightNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,10 +226,6 @@ namespace SerialCommPlugin
         private System.Windows.Forms.ComboBox baudCombo;
         private System.Windows.Forms.ComboBox parityCombo;
         private System.Windows.Forms.ComboBox stopCombo;
-        private System.Windows.Forms.NumericUpDown modNumeric;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown widthNumeric;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.NumericUpDown heightNumeric;
+        private System.Windows.Forms.TextBox configText;
     }
 }

@@ -12,9 +12,7 @@ namespace SerialCommPlugin
         public string Description => "A plugin to enable serial communication with the Arduino controller (built-in)";
         public string Author => "zsotroav";
         public string Link => "https://github.com/zsotroav/FOK-GYEM_Ultimate";
-
-        public bool IsConnected;
-
+        
         public List<Action> Actions => new()
         {
             new Action
@@ -30,13 +28,19 @@ namespace SerialCommPlugin
             }
         };
 
+        private int _moduleCount, _width, _height;
+
         public int Init(IContext context)
         {
             // AllocConsole();
             // Console.OpenStandardOutput();
 
+            (_moduleCount, _width, _height) = 
+                (context.ModCnt, context.ModH, context.ModV);
+
             SDK.PixelUpdatedEvent += ActionPD;
             SDK.ScreenUpdatedFull += ActionBA;
+            SDK.ScreenSizeChangedEvent += ScreenUpdated;
             return 0;
         }
 
@@ -58,30 +62,29 @@ namespace SerialCommPlugin
 
         public void Start()
         {
-            if (IsConnected)
+            if (Connection is { IsConnected: true })
             {
                 SDK.Communicate("Serial Connection", "Connection already established!\nOnly one serial controller is supported at once.", "warning");
                 return;
             }
-            var form = new FormConfig();
+            var form = new FormConfig(_moduleCount, _width, _height);
             form.ShowDialog();
 
             if (form.Success)
             {
                 Connection = form.Connection;
-                IsConnected = true;
+                if (Connection.IsConnected) SDK.Communicate("Serial Connection", "Connection established");
+                return;
             }
 
-            if (IsConnected) SDK.Communicate("Serial Connection", "Connection established");
-            else SDK.Communicate("Serial Connection", "Connection failed", "error");
+            SDK.Communicate("Serial Connection", "Connection failed", "error");
         }
 
         public void Disconnect()
         {
-            if (IsConnected)
+            if (Connection.IsConnected)
             {
                 Connection.Destroy();
-                IsConnected = false;
                 SDK.Communicate("Serial COM disconnect", "Disconnected serial screen.");
                 return;
             }
@@ -90,14 +93,25 @@ namespace SerialCommPlugin
 
         public void ActionPD(PixelData data)
         {
-            if (!IsConnected) return;
+            if (!Connection.IsConnected) return;
             Connection.PixelWrite(data);
         }
 
         public void ActionBA(BitArray data)
         {
-            if (!IsConnected) return;
+            if (!Connection.IsConnected) return;
             Connection.FullScreenWrite(Utils.ToByteArray(data));
+        }
+
+        public void ScreenUpdated(int cnt, int _, int w, int h)
+        {
+            if (cnt == _moduleCount && w == _width && h == _height) return;
+            (_moduleCount, _width, _height) = (cnt, w, h);
+
+            if (!Connection.IsConnected) return;
+            SDK.Communicate("Serial COM Warning", "Screen size changed, disconnecting from serial connected controller...", "warning");
+
+            Disconnect();
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]

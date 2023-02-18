@@ -10,10 +10,15 @@ namespace SerialCommPlugin
     {
         public Connection Connection;
         public bool Success;
+
+        private readonly int _count, _width, _height;
         
-        public FormConfig()
+        public FormConfig(int count, int width, int height)
         {
             InitializeComponent();
+            (_count, _width, _height) = (count, width, height);
+
+            configText.Text = $@"Using {_count} modules, each {_height} x {_width}";
 
             COMCombo.Items.AddRange(SerialPort.GetPortNames());
         }
@@ -43,14 +48,18 @@ namespace SerialCommPlugin
                     (int)timeoutNumeric.Value,
                     parity,
                     stop);
-                if (!Connection.Init((int)modNumeric.Value, (int)widthNumeric.Value, (int)heightNumeric.Value))
-                    throw new ExternalException("Initializing connection failed");
+                if (!Connection.Init(_count, _width, _height))
+                {
+                    Success = false;
+                    Close();
+                }
 
                 Success = true;
             }
             catch (Exception ex)
             {
                 SDK.Communicate("Serial COM Exception", ex.Message, "error");
+                Success = false;
             }
 
             Close();
