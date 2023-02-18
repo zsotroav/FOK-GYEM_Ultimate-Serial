@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using PluginBase;
 using Action = PluginBase.Action;
 
@@ -15,7 +13,7 @@ namespace SerialCommPlugin
         public string Author => "zsotroav";
         public string Link => "https://github.com/zsotroav/FOK-GYEM_Ultimate";
 
-        public bool IsConnected = false;
+        public bool IsConnected;
 
         public List<Action> Actions => new()
         {
@@ -90,7 +88,7 @@ namespace SerialCommPlugin
             SDK.Communicate("Serial COM disconnect", "Not connected, no connection to destroy!", "warning");
         }
 
-        public void ActionPD(pixelData data)
+        public void ActionPD(PixelData data)
         {
             if (!IsConnected) return;
             Connection.PixelWrite(data);

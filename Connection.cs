@@ -1,20 +1,19 @@
 using System;
 using System.IO.Ports;
 using PluginBase;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SerialCommPlugin
 {
     public class Connection
     {
         ///<summary>Controller protocol version number</summary>
-        public static readonly Byte VEController = 0x00;
+        public static readonly byte VEController = 0x00;
         
         ///<summary>Display protocol version number</summary>
-        public Byte VEDisplay;
+        public byte VEDisplay;
 
         ///<summary>Connection reference number</summary>
-        public Byte CD;
+        public byte CD;
 
         public SerialPort Port; 
 
@@ -41,9 +40,9 @@ namespace SerialCommPlugin
 
         /// <summary>Begin connection</summary>
         /// <returns>Whether or not the controller accepted the connection</returns>
-        public bool Init(int Count, int Width, int Height)
+        public bool Init(int count, int width, int height)
         {
-            byte[] initMessage = { 0xAA, 0x55, 0xAA, 0x55, VEController, (byte)Count, (byte)Width, (byte)Height};
+            byte[] initMessage = { 0xAA, 0x55, 0xAA, 0x55, VEController, (byte)count, (byte)width, (byte)height};
             Port.Write(initMessage,0,8);
 
             var buff = new byte[6]; 
@@ -58,7 +57,7 @@ namespace SerialCommPlugin
             VEDisplay = buff[0];
 
             // If we agree on all the parameters, consider the connection established
-            if (buff[1] == (byte)Count && buff[2] == (byte)Width && buff[3] == (byte)Height && buff[4] == 0xFF)
+            if (buff[1] == (byte)count && buff[2] == (byte)width && buff[3] == (byte)height && buff[4] == 0xFF)
             {
                 CD = buff[5];
                 return true;
@@ -84,9 +83,9 @@ namespace SerialCommPlugin
             GetResponse();
         }
 
-        public void PixelWrite(pixelData pixel)
+        public void PixelWrite(PixelData pixel)
         {
-            byte[] msg = { CD, 0x12, 0x00, 0x03, (byte)pixel.loc.x, (byte)pixel.loc.y, (byte)(pixel.state ? 0x01 : 0x00) };
+            byte[] msg = { CD, 0x12, 0x00, 0x03, (byte)pixel.Loc.X, (byte)pixel.Loc.Y, (byte)(pixel.State ? 0x01 : 0x00) };
             Port.Write(msg, 0, 7);
             GetResponse();
         }
