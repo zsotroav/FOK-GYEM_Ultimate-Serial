@@ -65,10 +65,10 @@ namespace SerialCommPlugin
                     Disconnect();
                     break;
                 case 8:
-                    ManualWrite(SDK.GetScreenState());
+                    ManualWrite(context.ScreenState);
                     break;
                 case 9:
-                    ManualWrite(SDK.GetScreenState(), true);
+                    ManualWrite(context.ScreenState, true);
                     break;
             }
             return 0;

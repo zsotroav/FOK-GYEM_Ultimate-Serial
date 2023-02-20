@@ -92,8 +92,10 @@ namespace SerialCommPlugin
 
         /// <summary>Re-write the whole screen with the driver's optimizations in place</summary>
         /// <param name="data">Data to write</param>
-        public void FullScreenWrite(byte[] data)
+        /// <param name="toReverse">If the bytes need to be reversed (little endian &lt;--&gt; big endian)</param>
+        public void FullScreenWrite(byte[] data, bool toReverse = true)
         {
+            if (toReverse) data = Utils.ReverseBytes(data);
             try
             {
                 byte[] msg = { CD, 0x11, (byte)(data.Length >> 8), (byte)data.Length };
@@ -110,8 +112,11 @@ namespace SerialCommPlugin
         /// regular full screen writing doesn't work as expected.
         /// </summary>
         /// <param name="data">Data to write</param>
-        public void ForceScreenWrite(byte[] data)
+        /// <param name="toReverse"></param>
+        public void ForceScreenWrite(byte[] data, bool toReverse = true)
         {
+            if (toReverse) data = Utils.ReverseBytes(data);
+
             // Force writing is slow and a timeout error is very likely at usual values.
             Port.ReadTimeout += 2000;
             try
